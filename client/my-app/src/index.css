@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+
+
+@font-face {
+  font-family: "Helvetica Roman";
+  src: local("HelveticaNeueRoman"),
+    url("/fonts/HelveticaNeueRoman.otf") format("opentype");
+  font-weight: normal;
+}
+
+.font-helviRoman{
+  font-family: 'Helvetica Roman';
+}
+
+@font-face {
+  font-family: 'Helvetica Light';
+  src: url('/fonts/HelveticaNeueLight.otf') format("opentype");
+}
+
+.font-helviLight{
+  font-family: 'Helvetica Light';
+}
+
+[data-theme="NeonMirage"]{
+      --bg:'#0E2148',
+      --secondary:'#7965C1',
+      --primary:'#483AA0',
+      --tertiary:'#E3D095'
+}
