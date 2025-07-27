@@ -4,6 +4,15 @@ import Chat1 from "../assets/Chat1.svg";
 import Chat2 from "../assets/Chat2.svg";
 import { motion } from "motion/react";
 import Features from "./Features";
+import { useAuth } from "../Context/AuthContext";
+import { useNavigate } from "react-router";
+
+interface User {
+  id: string;
+  name: string;
+  profilePicture: String;
+  email: string;
+}
 const LandingPage = ({
   isCaraousel,
   time,
@@ -11,12 +20,20 @@ const LandingPage = ({
   isCaraousel: boolean;
   time: number;
 }) => {
+  const navigate = useNavigate();
   const { theme } = useTheme();
   const [index, setIndex] = useState(0);
-
+  const { getUser } = useAuth();
+  const [user, setUser] = useState<User | null>(null);
   const colors = ["#FFFBDE", "#FFB4B4", "#E14434", "#91C8E4"];
-
+  
   useEffect(() => {
+    const u = getUser();
+    if(!u!) navigate('/sign-in')
+      else{
+      setUser(u!)
+      console.log(u)
+      }
     if (isCaraousel) {
       const timer = setInterval(() => {
         setIndex((prev) => (prev < Images.length - 1 ? prev + 1 : 0));
@@ -55,21 +72,23 @@ const LandingPage = ({
             With friends, teams, and communities.
           </h2>
         </div>
-        <motion.div className="flex justify-center">
-          <motion.div className="mt-10 flex flex-row z-0 justify-center px-2 sm:max-w-[50vw] xl:max-w-[30vw]">
+        <motion.div className="flex relative justify-center">
+          <motion.div className="mt-10  flex flex-row  z-0 justify-center ">
             {Images.map((_, ind) => {
               return (
                 <motion.img
                   animate={{
                     backgroundColor: colors,
                   }}
-                  transition={{
-                    // duration: 10,
-                    // repeat: Infinity,
-                    // repeatType: "loop",
-                  }}
+                  // transition={
+                  //   {
+                  //     duration: 10,
+                  //     repeat: Infinity,
+                  //     repeatType: "loop",
+                  //   }
+                  // }
                   key={ind}
-                  className="absolute p-0.5 rounded-xl opacity-100 w-fit"
+                  className="absolute p-0.5 rounded-xl opacity-100 sm:w-[60vw] md:w-[40vw] w-[85vw]"
                   src={Images[index].src}
                   alt="ChatImages"
                 />

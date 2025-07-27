@@ -47,15 +47,15 @@ const Features = () => {
   return (
     <div
       className={`${
-        theme === "dark" ? " bg-zinc-900  text-white" : "text-zinc-900"
-      } w-screen min-h-screen text-white  py-6 px-10`}
+        theme === "dark" ? " bg-zinc-900  text-white" : "text-zinc-950"
+      } w-screen min-h-screen text-white font-helviLight tracking-wide py-6 px-10`}
     >
       <h2 className="text-4xl text-center font-helviRoman">Features</h2>
-      <div className="grid grid-cols-2 place-items-center gap-8 justify-center mt-10 md:grid-cols-4">
+      <div className="grid grid-cols-1 xl:grid-cols-4  place-items-center gap-8 justify-center mt-10 md:grid-cols-2">
          {
             feature.map((i,index)=>{
                return(
-                  <div style={{borderColor:i.color2}} className={`flex flex-col items-center px-5 py-3 border-[1px] rounded-md  h-[42vh] md:h-[50vh] lg:h-[35vh] gap-2 hover:scale-103 transition-all ${i.bg} ease-linear duration-200`} key={index}>
+                  <div style={{borderColor:i.color2}} className={`flex flex-col items-center px-5 py-3 border-[1px] rounded-md w-[60vw] h-[40vh] md:w-[40vw] md:h-[30vh] xl:w-[20vw] xl:h-[35vh] gap-2 hover:scale-103 transition-all ${i.bg} ease-linear duration-200`} key={index}>
                      <div className={i.color}>{i.icons}</div>
                      <h2 className="font-helviRoman">{i.title}</h2>
                      <li className="text-sm text-center list-none mb-2">{i.content1}</li>

@@ -1,12 +1,19 @@
-import { Link } from "react-router"
+import { Link, useLocation } from "react-router"
 import { useTheme } from "../Context/ThemeProvider"
 import { Sun,Moon, Menu } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {motion} from 'motion/react'
+import { useAuth } from "../Context/AuthContext"
+import { useNavigate } from "react-router"
+
 
 const Navbar = () => {
+   const navigate=useNavigate()
+   const {getUser}=useAuth()
+   const [user,setUser]=useState<any>()
    const {theme,toggleTheme}=useTheme()
    const [menuopen,setMenuOpen]=useState(false)
+   const location=useLocation()
    const navLink=[
       {
          title:'Home',
@@ -24,9 +31,18 @@ const Navbar = () => {
          title:'About',
          href:'#about'
       }
+      
    ]
+   useEffect(()=>{
+      const u=getUser() 
+      setUser(u)
+   },[])
+
+   const paths=['/sign-in','/sign-up','/features','/about']
+   const {Logout}=useAuth()
   return (
-   <div className="p-2 pr-3 w-screen py-2 z-99 fixed rounded-2xl">
+   <div className={`p-2 pr-3 w-screen py-2 z-99 fixed rounded-2xl ${paths.includes(location.pathname) && 'hidden'}`}>
+
     <div className={`${theme==='dark' ? 'bg-zinc-900/80 text-white':'text-zinc-800'} h-fit  font-helviRoman flex justify-between px-5 py-3 border border-zinc-600 shadow-[1px_1px_10px_rgba(150,120,100,0.5)] rounded-2xl  backdrop-blur-[1.5px]`}>
       <h2 className="text-lg font-semibold">Chatify</h2>
 
@@ -40,6 +56,7 @@ const Navbar = () => {
          }
       </div>
       <div className="flex gap-2 items-center">
+                  <div  onClick={()=>toggleTheme()} className="rounded-md p-1 border h-fit">{theme==='light'?<Moon size={15}/>:<Sun size={15}/>}</div>
          <div className="relative md:hidden" onClick={()=>setMenuOpen(pre=>!pre)}><Menu size={20}/></div>
 
          {/* Burger Menu */}
@@ -52,7 +69,9 @@ const Navbar = () => {
                })
             }
          </motion.div>}
-         <div  onClick={()=>toggleTheme()} className="rounded-md p-1 border h-fit">{theme==='light'?<Moon size={15}/>:<Sun size={15}/>}</div>
+         <button onClick={()=>{Logout() 
+            navigate('/sign-in')}} className="bg-red-500 px-2 rounded-md transition-all text-white  hover:shadow-[1.5px_1.5px_3px_rgba(0,0,0,1)] duration-200">Logout</button>
+         {user && <img src={user?.profilePicture || './my2.jpg'} alt="profile" onClick={()=>navigate('/profile')} className="w-8 object-cover aspect-square border transition-all rounded-full"/>}
     </div>
     </div>
     </div>

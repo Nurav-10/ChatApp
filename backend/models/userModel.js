@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const userSchema=new mongoose.Schema({
    username:{
       type:String,
-      required:[5,'Minimun should be of 5 characters'],
+      required:true,
       unique:true
    },
    email:{
@@ -25,6 +25,6 @@ const userSchema=new mongoose.Schema({
    }
 })
 
-const User=mongoose.models('User') || mongoose.model('User',userSchema)
+const User=mongoose.model('User',userSchema)
 
 export default User

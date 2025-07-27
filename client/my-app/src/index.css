@@ -28,3 +28,13 @@
       --primary:'#483AA0',
       --tertiary:'#E3D095'
 }
+
+.scroll-hidden {
+  overflow: auto;
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* Internet Explorer 10+ */
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none;               /* Chrome, Safari */
+}
