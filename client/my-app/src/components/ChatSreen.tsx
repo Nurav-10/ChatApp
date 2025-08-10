@@ -74,10 +74,10 @@ const ChatSreen = () => {
       } py-10 px-5 overflow-y-hidden font-helviLight`}
     >
     {!modes && (
-          <div className="flex gap-4  justify-around  h-screen">
+          <div className="grid md:grid-cols-3 md:gap-20 gap-5 justify-around  h-screen">
             {Modes.map((i: any, index) => {
               return (
-                <div key={index} onClick={()=>navigate(`/${i.Component}`)}  style={{backgroundColor:Colors[colorScheme].primary}}  className=" px-2 gap-1 rounded-sm rounded-br-2xl sm:h-[25vh] md:h-[16vh] h-[35vh] items-center flex flex-col  py-3 cursor-pointer bg-gradient-to-bl border from-cyan-300/40 to-slate-300/60 hover:scale-103 transition-all ease-linear duration-200 mt-20">
+                <div key={index} onClick={()=>navigate(`/${i.Component}`)}  style={{backgroundColor:Colors[colorScheme].primary}}  className=" px-2 gap-1 rounded-sm rounded-br-2xl h-[20vh] items-center flex flex-col w-[60vw] md:w-full  py-3 cursor-pointer bg-gradient-to-bl border from-cyan-300/40 to-slate-300/60 hover:scale-103 transition-all ease-linear duration-200 mt-20">
                   <h2 className="text-center font-semibold text-xl">{i.title}</h2>
                   <h2 className="text-center  mt-1">{i.mainHeading}</h2>
                 </div>

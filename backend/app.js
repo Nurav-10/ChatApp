@@ -6,13 +6,13 @@ import AuthRoute from './routes/authRoute.js'
 import uploadImage from './routes/uploadImage.js'
 import UserList from './routes/userListRoute.js'
 import MessageRoute from './routes/messageRoute.js'
-import { Socket } from 'dgram'
 import Message from './models/messageModel.js'
 
 const app = express()
 const server = createServer(app)
 
 const io = new Server(server, {
+   transports: ['websocket'],
    cors: {
       origin: '*',
       methods: ['GET', 'POST']
@@ -36,44 +36,106 @@ app.get('/', (req, res) => {
 //non persistent Chats.
 const socketMap = new Map()
 const privateChats = new Map()
-const privateRoom=new Map()
+const privateRoom = new Map()
 
 io.on('connection', (socket) => {
 
-   socket.on('join-private',({name,roomId})=>{
+   //admin join.
+   socket.on('join-admin', ({ name, roomId }) => {
+      const roomExist = Array.from(privateRoom.values()).some((user) => user.roomId === roomId && user.admin === true)
+      if (roomExist) {
+         socket.emit('error', { msg: `Room ${roomId} already Exist` })
+         return
+      }
+      else {
+         privateRoom.set(name, { socketId: socket.id, roomId, admin: true })
+         socket.join(roomId)
+         console.log(privateRoom)
+      }
+      const userOnlineInRoom = Array.from(privateRoom, ([name, user]) => ({
+         name,
+         roomId: user.roomId,
+         socketId: user.socketId,
+         admin: user.admin
+      })).filter((user) => user.roomId === roomId)
 
-      const existingUser=privateRoom.get(name)
 
-     if (existingUser && existingUser.roomId === roomId) {
-      console.log(`${name} already exists in room ${roomId}`);
-      socket.emit("error-message", {
-        msg: `${name} already exists in room ${roomId}`,
-      });
-      return;
-    }
+      io.to(roomId).emit('online', ({ privateUserList: userOnlineInRoom }))
+      io.to(roomId).emit('welcome', ({ msg: `Welcome ${name} to the Room ${roomId}` }))
 
-    else {
-      privateRoom.set(name, { socketId: socket.id, roomId });
-      socket.join(roomId);
-    }
-      
+
+   })
+
+   socket.on('join-private', ({ name, roomId }) => {
+
+
+      //check if room exist.
+      const existRoom = Array.from(privateRoom.values()).some((user) => user.roomId === roomId)
+      if (!existRoom) {
+         socket.emit('error', { msg: `Room ${roomId} doesn't Exist` })
+         return
+      }
+      const existingUser = privateRoom.get(name)
+
+      if (existingUser && existingUser.roomId === roomId) {
+         console.log(`${name} already exists in room ${roomId}`);
+         socket.emit("error-message", {
+            msg: `${name} already exists in room ${roomId}`,
+         });
+         return;
+      }
+
+      else {
+         privateRoom.set(name, { socketId: socket.id, roomId, admin: false });
+         socket.join(roomId);
+      }
+
+
+
       // console.log(`${name} join the room ${roomId} and socketId ${socket.id}`)
 
-      const userOnlineInRoom=Array.from(privateRoom,([name,user])=>({
+      const userOnlineInRoom = Array.from(privateRoom, ([name, user]) => ({
          name,
-         roomId:user.roomId,
-         socketId:user.socketId
-      })).filter((user)=>user.roomId===roomId)
+         roomId: user.roomId,
+         socketId: user.socketId,
+         admin: user.admin
+      })).filter((user) => user.roomId === roomId)
 
 
-      io.to(roomId).emit('online',({privateUserList:userOnlineInRoom}))
-      io.to(roomId).emit('welcome',({msg:`Welcome ${name} to the Room ${roomId}`}))
+      io.to(roomId).emit('online', ({ privateUserList: userOnlineInRoom }))
+      io.to(roomId).emit('welcome', ({ msg: `Welcome ${name} to the Room ${roomId}` }))
       console.log(privateRoom)
    })
 
-   socket.on('new-message',({name,message})=>{
+   //admin removing the users.
+   socket.on("kick-user", ({ socketId,roomId,admin,name }) => {
+
+      const isAdmin = Array.from(privateRoom.values()).some(
+         (u) => u.socketId === socket.id && admin
+      );
+
+      if (!isAdmin) return;
+
+      socket.to(socketId).emit("removed",({msg:`${name} is removed by the admin`}))
+      
+      const targetSocket = io.sockets.sockets.get(socketId);
+      if (targetSocket) targetSocket.disconnect(true);
+      
+      const userOnlineInRoom = Array.from(privateRoom, ([name, user]) => ({
+         name,
+         roomId: user.roomId,
+         socketId: user.socketId,
+         admin: user.admin
+      })).filter((user) => user.roomId === roomId)
+
+      console.log(userOnlineInRoom)
+      io.to(userOnlineInRoom[0].roomId).emit("online", { privateUserList: userOnlineInRoom });
+   });
+
+   socket.on('new-message', ({ name, message }) => {
       // console.log(name,message)
-      io.to(message.roomId).emit('receiveMessage',({name,message}))
+      io.to(message.roomId).emit('receiveMessage', ({ name, message }))
+      console.log(name, message)
    })
 
    socket.on('join-room', ({ senderId }) => {
@@ -84,7 +146,7 @@ io.on('connection', (socket) => {
       socketMap[senderId] = socket.id
       // console.log(`${senderId} joined the chat`)
    })
-   
+
 
    socket.on('newMessage', ({ senderId, receiverId, message }) => {
       const receiverSocketId = socketMap[receiverId]
@@ -147,23 +209,23 @@ io.on('connection', (socket) => {
          }
          console.log(`${userId} leave the chats`)
       }
-     
+
 
       for (const [name, User] of privateRoom) {
-         const leaveUser=name
-      if (User.socketId === socket.id) {
-        console.log(`${name} disconnected`);
-        privateRoom.delete(name);
+         const leaveUser = name
+         if (User.socketId === socket.id) {
+            console.log(`${name} disconnected`);
+            privateRoom.delete(name);
 
-        const userOnlineInRoom=Array.from(privateRoom,([name,user])=>({
-         name,
-         roomId:user.roomId,
-         socketId:user.socketId
-      })).filter((user)=>user.roomId===User.roomId)
-        io.to(User.roomId).emit('end',({msg:`${leaveUser} left the chat room ${User.roomId}`}))
-        io.to(User.roomId).emit('online', ({ privateUserList:userOnlineInRoom}))
+            const userOnlineInRoom = Array.from(privateRoom, ([name, user]) => ({
+               name,
+               roomId: user.roomId,
+               socketId: user.socketId
+            })).filter((user) => user.roomId === User.roomId)
+            io.to(User.roomId).emit('end', ({ msg: `${leaveUser} left the chat room ${User.roomId}` }))
+            io.to(User.roomId).emit('online', ({ privateUserList: userOnlineInRoom }))
+         }
       }
-    }
    })
 })
 

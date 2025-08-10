@@ -12,6 +12,7 @@ const Navbar = () => {
    const {getUser}=useAuth()
    const [user,setUser]=useState<any>()
    const {theme,toggleTheme}=useTheme()
+   const bgColor=['#234578','#876789','#564733','#397256']
    const [menuopen,setMenuOpen]=useState(false)
    const location=useLocation()
    const navLink=[
@@ -43,14 +44,14 @@ const Navbar = () => {
   return (
    <div className={`p-2 pr-3 w-screen py-2 z-99 fixed rounded-2xl ${paths.includes(location.pathname) && 'hidden'}`}>
 
-    <div className={`${theme==='dark' ? 'bg-zinc-900/80 text-white':'text-zinc-800'} h-fit  font-helviRoman flex justify-between px-5 py-3 border border-zinc-600 shadow-[1px_1px_10px_rgba(150,120,100,0.5)] rounded-2xl  backdrop-blur-[1.5px]`}>
+    <div className={`${theme==='dark' ? 'bg-zinc-900/80 text-white':'bg-white/40 text-zinc-800'} h-fit  font-helviRoman flex justify-between px-5 py-3 border border-zinc-600 shadow-[1px_1px_10px_rgba(150,120,100,0.5)] rounded-2xl  backdrop-blur-[1.5px]`}>
       <h2 className="text-lg font-semibold">Chatify</h2>
 
-      <div className="md:flex gap-8 hidden items-center">
+      <div className="md:flex gap-8 hidden items-center font-light">
          {
             navLink.map((i,ind:number)=>{
                return (
-                  <Link key={ind} className='hover:text-blue-400 px-3' to={i.href}>{i.title}</Link>
+                  <Link key={ind} className={`${theme==='dark'?'bg-zinc-900':'bg-amber-50'} px-2 py-1 hover:text-blue-400 rounded-sm `} to={i.href}>{i.title}</Link>
                )
             })
          }

@@ -4,7 +4,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { Colors } from "../color-scheme/colors";
 import { FormInput, Star } from "lucide-react";
 import Navbar from "./Navbar";
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 const NonPersistentChats = () => {
   interface Messages {
     id: number;
@@ -30,7 +30,9 @@ const NonPersistentChats = () => {
   const [roomId, setRoomId] = useState("");
   const [peerId, setPeerId] = useState("");
 
-  const socket=useMemo(()=>io('http://localhost:5000'),[])
+  const socket=useMemo(()=>io('http://localhost:5000',{
+    transports:['websocket']
+  }),[])
 
   const options = [
     "NeonMirage",
