@@ -12,11 +12,12 @@
 🔔 Message notifications and activity status
 
 
-<img width="1919" height="864" alt="Screenshot 2025-07-27 235406" src="https://github.com/user-attachments/assets/ce0d4206-e3e6-46dc-9d09-bc70f8897097" />
+<img width="1899" height="865" alt="Screenshot 2025-08-10 225731" src="https://github.com/user-attachments/assets/ef4ea33e-d962-4152-ac04-c39ff9477d47" />
+<img width="1902" height="869" alt="Screenshot 2025-08-10 225832" src="https://github.com/user-attachments/assets/b759e645-bc1b-47e9-8898-1a9c0db3c0bb" />
+<img width="1906" height="867" alt="Screenshot 2025-08-10 225744" src="https://github.com/user-attachments/assets/72db0ff7-9feb-41ca-9358-ae621bdace58" />
+<img width="1904" height="869" alt="Screenshot 2025-08-10 225758" src="https://github.com/user-attachments/assets/bd6bc892-3f62-4255-8e3f-31fdc4251ec2" />
+<img width="1896" height="871" alt="Screenshot 2025-08-10 225811" src="https://github.com/user-attachments/assets/01767fd7-12af-408b-8e2c-565d5150ba70" />
 
-<img width="1918" height="868" alt="Screenshot 2025-07-27 235418" src="https://github.com/user-attachments/assets/41c5a76c-ea0f-4557-88cd-5cdb92ca43ad" />
-
-<img width="1262" height="867" alt="Screenshot 2025-07-27 234841" src="https://github.com/user-attachments/assets/189995cc-3eea-4b39-b60e-595f2f27f757" />
 
 ##Non Persistent Chats with multiple themes.
 
